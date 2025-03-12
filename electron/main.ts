@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, clipboard } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -34,10 +34,17 @@ function createWindow() {
     },
   })
 
-  // Test active push message to Renderer-process.
-  win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', (new Date).toLocaleString())
-  })
+  // 初始化剪贴板监听
+  let lastClipboardContent = clipboard.readText()
+  
+  // 定期检查剪贴板内容是否变化
+  setInterval(() => {
+    const newContent = clipboard.readText()
+    if (newContent !== lastClipboardContent) {
+      lastClipboardContent = newContent
+      win?.webContents.send('clipboard-change', newContent)
+    }
+  }, 1000)
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL)
