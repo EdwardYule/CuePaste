@@ -1,4 +1,4 @@
-import { app, BrowserWindow, clipboard } from 'electron'
+import { app, BrowserWindow, clipboard, ipcMain } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -29,9 +29,16 @@ let win: BrowserWindow | null
 function createWindow() {
   win = new BrowserWindow({
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
+    frame: false,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
     },
+  })
+
+  // 处理窗口置顶
+  ipcMain.on('toggle-pin', (_event, shouldPin: boolean) => {
+    win?.setAlwaysOnTop(shouldPin)
   })
 
   // 初始化剪贴板监听
@@ -48,6 +55,7 @@ function createWindow() {
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL)
+    win.webContents.openDevTools()
   } else {
     // win.loadFile('dist/index.html')
     win.loadFile(path.join(RENDERER_DIST, 'index.html'))

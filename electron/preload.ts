@@ -22,3 +22,15 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   // You can expose other APTs you need here.
   // ...
 })
+
+// 添加 TypeScript 类型声明
+declare global {
+  interface Window {
+    ipcRenderer: {
+      on: typeof ipcRenderer.on
+      off: typeof ipcRenderer.off
+      send: typeof ipcRenderer.send
+      invoke: typeof ipcRenderer.invoke
+    }
+  }
+}

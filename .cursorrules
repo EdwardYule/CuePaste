@@ -44,4 +44,22 @@
    - dist-ssr/：SSR 编译产物
 2. node_modules 不纳入版本控制
 3. 本地配置文件（如 .env.local）不纳入版本控制
-4. 编辑器配置文件（如 .vscode）按需纳入版本控制 
+4. 编辑器配置文件（如 .vscode）按需纳入版本控制
+
+## Electron 窗口配置规范
+1. 无边框窗口配置：
+   - 使用 `frame: false` 去除原生窗口边框
+   - 使用 `autoHideMenuBar: true` 隐藏菜单栏
+2. 无边框窗口注意事项：
+   - 需要实现自定义窗口控制按钮（最小化、最大化、关闭）
+   - 需要实现窗口拖拽功能
+   - 建议添加窗口阴影效果提升用户体验 
+
+## Electron 开发调试规范
+1. 开发模式下自动打开开发者工具：
+   - 使用 `win.webContents.openDevTools()` 在开发环境打开控制台
+   - 仅在 `VITE_DEV_SERVER_URL` 存在时打开，避免生产环境开启
+2. 调试最佳实践：
+   - 使用 `console.log` 时注意添加清晰的标签
+   - 在生产环境构建前清理所有调试代码
+   - 使用 Vue Devtools 调试组件状态 
